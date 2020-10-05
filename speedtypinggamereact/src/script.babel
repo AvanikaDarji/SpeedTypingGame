@@ -1,0 +1,55 @@
+
+
+function App(){
+const STARTING_TIME =5;
+  const [text, setText] =       React.useState("");
+      const[timeRemaining,setTimeRemaining] = React.useState(STARTING_TIME);
+      
+      const[isTimeRunning, setIsTimeRunning] = React.useState(false);
+      
+      const[wordCountNumber, setWordCount] = React.useState(0);
+      
+     const textBoxRef =React.useRef(null)
+      
+      function handleChange(e){
+      setText(e.target.value)
+  }
+      
+      function wordCount(text){
+       const wordArray= text.trim().split(" ");
+      return wordArray.filter(word=> word !=="").length;
+           
+      }
+      function startClock(){
+        setIsTimeRunning(true);
+         setTimeRemaining(STARTING_TIME);
+        setText("");
+        textBoxRef.current.disabled = false;
+         textBoxRef.current.focus();
+      }
+   React.useEffect(() => {
+      if(isTimeRunning && timeRemaining > 0) {
+        setTimeout(() => {
+            setTimeRemaining(time => time - 1)
+        }, 1000)
+      }else if(timeRemaining == 0){
+        setIsTimeRunning(false);
+         setWordCount(wordCount(text));
+      }
+    }, [timeRemaining, isTimeRunning])
+      
+      
+  
+      
+
+ return( <div>
+        <h1>How fast do you type? </h1>
+        <textarea ref={textBoxRef} name="usertext" disabled={!isTimeRunning} onChange={handleChange} value={text}/>
+        <h4> Time Remaining : {timeRemaining} </h4>
+        <button onClick={startClock} disabled={isTimeRunning}> Start </button>
+        <h1> Word Count:{wordCountNumber} </h1>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
